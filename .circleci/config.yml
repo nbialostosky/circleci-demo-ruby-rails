@@ -46,6 +46,7 @@ jobs:
       # Run rspec in parallel
       - ruby/rspec-test
       - ruby/rubocop-check
+      - run: curl -X GET "https://circleci.com/api/v2/project/github/nbialostosky/circleci-demo-ruby-rails/${CIRCLE_BUILD_NUM}/tests?circle-token=${CIRCLE_TOKEN}"
 
 workflows:
   version: 2
