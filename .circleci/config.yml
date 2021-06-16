@@ -47,29 +47,14 @@ jobs:
       - run:
           name: Run Rspec and automatically bisect on failure
           command: |
-            TEST_RUN=$(bundle exec rspec --order random --failure-exit-code 0)
-            echo "export TEST_RESULTS=$TEST_RUN" >> $BASH_ENV
-            STATUS=$(echo $TEST_RUN | grep -cw "0 failures")
-            SEED=$(echo $TEST_RUN | sed -n -e 's/^.*seed //p')
-            echo $STATUS
-            echo $SEED
-
-            echo "finally done, checking if bisect is needed"
-            if [[ "$STATUS" == "1" ]]; then
-              echo "Proceeding with build, no failures"
-              exit 0
-            else
-              echo "Failure present, re-running with bisect"
-              bundle exec rspec --format progress --seed ${SEED} --bisect
-            fi
+            touch test-results.txt
+            bundle exec rspec --order random > test-results.txt
       - run:
           name: Run Rspec Bisect on failure
           when: on_fail
           command: |
-            if [ -n "$TEST_RESULTS" ]; then
-              STATUS=$(echo $TEST_RUN | grep -cw "0 failures")
-              SEED=$(echo $TEST_RUN | sed -n -e 's/^.*seed //p')
-              echo $STATUS
+            if [ -s test-results.txt ]; then
+              SEED=$(cat test-results.txt | sed -n -e 's/^.*seed //p' | head -1)
               echo $SEED
             else
               echo "Rspec step not run, no bisect needed"
