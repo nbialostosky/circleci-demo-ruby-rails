@@ -48,7 +48,8 @@ jobs:
           name: Run Rspec and automatically bisect on failure
           command: |
             TEST_RUN=$(bundle exec rspec --order random --failure-exit-code 0)
-            echo $TEST_RUN
+            echo "export TEST_RESULTS=$TEST_RUN" >> $BASH_ENV
+            echo 
             STATUS=$(echo $TEST_RUN | grep -cw "0 failures")
             SEED=$(echo $TEST_RUN | sed -n -e 's/^.*seed //p')
             echo $STATUS
@@ -62,6 +63,12 @@ jobs:
               echo "Failure present, re-running with bisect"
               bundle exec rspec --format progress --seed ${SEED} --bisect
             fi
+      - run:
+          name: Run Rspec Bisect on failure
+          when: on_fail
+          command: |
+            echo $TEST_RESULTS
+
       #- ruby/rubocop-check
 
 workflows:
