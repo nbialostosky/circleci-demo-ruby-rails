@@ -16,7 +16,6 @@ jobs:
           pkg-manager: yarn
           cache-key: "yarn.lock"
   test:
-    parallelism: 3
     docker:
       - image: cimg/ruby:2.7-node
       - image: circleci/postgres:9.5-alpine
@@ -53,11 +52,11 @@ jobs:
             while [ "$STATUS" == "running" ]; do
               TEST_RUN=$(bundle exec rspec --format progress)
               echo $TEST_RUN
-              STATUS="success"
+              STATUS=$(grep -cw "0 failures" <<< $TEST_RUN)
             done
 
             echo "finally done, checking if bisect is needed: $STATUS"
-            if [[ "$STATUS" == "success" ]]; then
+            if [[ "$STATUS" == "1" ]]; then
               echo "Proceeding with build, as triggered pipeline was success"
               exit 0
             else
