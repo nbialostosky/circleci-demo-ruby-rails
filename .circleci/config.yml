@@ -42,6 +42,7 @@ jobs:
       - run:
           name: Database setup
           command: bundle exec rails db:schema:load --trace
+      - run: exit 1
       # Run rspec in parallel
       #- ruby/rspec-test
       - run:
