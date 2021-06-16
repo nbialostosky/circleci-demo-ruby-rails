@@ -47,13 +47,12 @@ jobs:
       - run:
           name: Run Rspec and automatically bisect on failure
           command: |
-            STATUS="running"
-
-            while [ "$STATUS" == "running" ]; do
-              TEST_RUN=$(bundle exec rspec --format progress)
-              echo $TEST_RUN
-              STATUS=$(echo $TEST_RUN | grep -cw "0 failures")
-            done
+            TEST_RUN=$(bundle exec rspec --order random)
+            echo $TEST_RUN
+            STATUS=$(echo $TEST_RUN | grep -cw "0 failures")
+            SEED=$(echo $TEST_RUN | sed -n -e 's/^.*seed //p')
+            echo $STATUS
+            echo $SEED
 
             echo "finally done, checking if bisect is needed"
             if [[ "$STATUS" == "1" ]]; then
@@ -61,7 +60,7 @@ jobs:
               exit 0
             else
               echo "Failure present, re-running with bisect"
-              bundle exec rspec --format progress --seed 1234 --bisect
+              bundle exec rspec --format progress --seed ${SEED} --bisect
             fi
       #- ruby/rubocop-check
 
