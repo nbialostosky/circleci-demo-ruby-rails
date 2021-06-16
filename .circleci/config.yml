@@ -47,7 +47,7 @@ jobs:
       - run:
           name: Run Rspec and automatically bisect on failure
           command: |
-            TEST_RUN=$(bundle exec rspec --order random)
+            TEST_RUN=$(bundle exec rspec --order random --failure-exit-code 0)
             echo $TEST_RUN
             STATUS=$(echo $TEST_RUN | grep -cw "0 failures")
             SEED=$(echo $TEST_RUN | sed -n -e 's/^.*seed //p')
