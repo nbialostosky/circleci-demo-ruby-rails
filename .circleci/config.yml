@@ -48,7 +48,7 @@ jobs:
           name: Run Rspec and automatically bisect on failure
           command: |
             touch test-results.txt
-            exec &> >(tee -a test-results.txt) | bundle exec rspec --order random 
+            bundle exec rspec --order random 2>&1 | tee test-results.txt
       - run:
           name: Run Rspec Bisect on failure
           when: on_fail
