@@ -55,6 +55,7 @@ jobs:
           command: |
             if [ -s test-results.txt ]; then
               SEED=$(cat test-results.txt | sed -n -e 's/^.*seed //p' | head -1)
+              echo $SEED
               bundle exec rspec --format progress --seed ${SEED} --bisect
             else
               echo "Rspec step not run, no bisect needed"
