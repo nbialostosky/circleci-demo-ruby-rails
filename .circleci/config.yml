@@ -52,16 +52,16 @@ jobs:
             while [ "$STATUS" == "running" ]; do
               TEST_RUN=$(bundle exec rspec --format progress)
               echo $TEST_RUN
-              STATUS=$(grep -cw "0 failures" <<< $TEST_RUN)
+              STATUS=$(echo $TEST_RUN | grep -cw "0 failures")
             done
 
-            echo "finally done, checking if bisect is needed: $STATUS"
+            echo "finally done, checking if bisect is needed"
             if [[ "$STATUS" == "1" ]]; then
-              echo "Proceeding with build, as triggered pipeline was success"
+              echo "Proceeding with build, no failures"
               exit 0
             else
-              echo "Stopping build, triggered pipeline was not a success"
-              exit 1
+              echo "Failure present, re-running with bisect"
+              bundle exec rspec --format progress --seed 1234 --bisect
             fi
       #- ruby/rubocop-check
 
