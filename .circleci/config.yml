@@ -33,7 +33,9 @@ jobs:
       RAILS_ENV: test
     steps:
       - checkout
-      - run: sudo apt install postgresql-contrib
+      - run: |
+          sudo apt update
+          sudo apt install postgresql-contrib
       - run: |
           cd /path/to/postgres-13/contrib/ltree
           make
