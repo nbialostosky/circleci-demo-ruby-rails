@@ -33,6 +33,12 @@ jobs:
       RAILS_ENV: test
     steps:
       - checkout
+      - run: sudo apt install postgresql-contrib
+      - run: |
+          cd /path/to/postgres-13/contrib/ltree
+          make
+          sudo make install
+      - run: create extension ltree
       - ruby/install-deps
       - node/install-packages:
           pkg-manager: yarn
